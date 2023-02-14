@@ -4,29 +4,28 @@ import "reflect-metadata";
 import { buildSchema, Resolver, Query,Arg, Field, ObjectType,ID } from "type-graphql";
 
 @ObjectType()
-export class Dog {
-    @Field(type => ID)
-    name: string;
+export class Dog{
+@Field (() => ID)
+name: string;
 }
 
-@Resolver(Dog)
-export class DogResolver {
-    @Query(() => [Dog])
-    dogs(): Dog[] {
-        return [
-            { name: "Snickers" },
-            { name: "Sunny" },
-            { name: "Bubba" },
-        ];
-    }
+@Resolver (Dog)
+export class DogsResolver {
+@Query(() => [Dog])
+dogs(): Dog[] {
+return [
+{ name: "Bo" },
+{ name: "Lassie" },
+];
+}
 }
 
 const schema = await buildSchema({
-    resolvers: [DogResolver],
-});
+    resolvers: [DogsResolver],
+    });
 
 
-const apolloServer = new ApolloServer({
+const server = new ApolloServer({
     schema,
 });
 
@@ -36,11 +35,11 @@ export const config = {
     },
 };
 
-const startServer = apolloServer.start();
+const startServer = server.start();
 
 export default async function handler(req, res) {
     await startServer;
-    await apolloServer.createHandler({
+    await server.createHandler({
         path: "/api/graphql",
     })(req, res);
 }
